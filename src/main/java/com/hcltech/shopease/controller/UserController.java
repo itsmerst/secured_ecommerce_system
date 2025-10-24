@@ -26,28 +26,23 @@ import java.util.stream.Collectors;
     private UserRepository userRepository;
 
     @GetMapping("/dashboard")
-    public ResponseEntity<?> dashboard(Authentication authentication){
-        // authentication.getName() is username because JwtAuthenticationFilter set it as principal
-        String username = (String) authentication.getPrincipal();
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        long purchasesCount = purchaseRepository.findByUser(user).size();
-        return ResponseEntity.ok(java.util.Map.of("username", user.getUsername(), "email", user.getEmail(), "purchasesCount", purchasesCount));
-    }
+public ResponseEntity<?> getDashboard(Authentication authentication) {
+    String username = authentication.getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
+    return ResponseEntity.ok(Map.of(
+        "message", "Welcome " + user.getUsername(),
+        "email", user.getEmail()
+    ));
+}
 
-    @GetMapping("/purchases")
-    public ResponseEntity<?> purchases(Authentication authentication){
-        String username = (String) authentication.getPrincipal();
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        List<Purchase> purchases = purchaseRepository.findByUser(user);
-        var dto = purchases.stream().map(p -> java.util.Map.of(
-                "productName", p.getProduct().getName(),
-                "purchaseDate", p.getPurchaseDate(),
-                "quantity", p.getQuantity(),
-                "price", p.getProduct().getPrice(),
-                "totalAmount", p.getTotalAmount()
-        )).collect(Collectors.toList());
-        return ResponseEntity.ok(dto);
-    }
+@GetMapping("/purchases")
+public ResponseEntity<?> getUserPurchases(Authentication authentication) {
+    String username = authentication.getName();
+    User user = userRepository.findByUsername(username).orElseThrow();
+    List<Purchase> purchases = purchaseRepository.findByUserId(user.getId());
+    return ResponseEntity.ok(purchases);
+}
+
 
 }
 
