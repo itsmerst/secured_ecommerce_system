@@ -13,14 +13,14 @@ import java.util.List;
     private PurchaseRepository purchaseRepository;
 
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(){
-        List<User> users = userRepository.findAll();
-        return ResponseEntity.ok(users);
-    }
+public List<User> getAllUsers() {
+    return userRepository.findAll();
+}
 
-    @GetMapping("/purchases")
-    public ResponseEntity<?> getAllPurchases(){
-        return ResponseEntity.ok(purchaseRepository.findAll());
-    }
+@GetMapping("/purchases")
+public List<Purchase> getAllPurchases() {
+    return purchaseRepository.findAll();
+}
+
 
 }
