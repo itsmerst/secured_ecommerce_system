@@ -20,6 +20,11 @@ public class User { @Id @GeneratedValue(strategy = GenerationType.IDENTITY) priv
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public enum Role {
+    ROLE_USER,
+    ROLE_ADMIN
+}
+
     public Long getId() {
         return id;
     }
